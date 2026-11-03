@@ -34,11 +34,11 @@ xcodebuild -project ThreeOneOSFive.xcodeproj \
 - 步骤：`xcodebuild` 未签名构建 → 打包 `Payload/XiangYang.app` 为 IPA → 上传 Artifact
 - 打 `v*` 标签时，额外用 `softprops/action-gh-release` 发布 Release，直接附带 IPA
 
-产物命名：`3105-v<CFBundleShortVersionString>-<CFBundleVersion>-unsigned.ipa`，例如 `3105-v2.0-8-unsigned.ipa`。
+产物命名：`XiangYang.ipa`（未签名）。
 
 ### 下载
 
-- Actions 运行页 → Artifacts → `3105-unsigned-ipa`
+- Actions 运行页 → Artifacts → `XiangYang`
 - 或者 Releases 页面（仅打标签的构建）
 
 ## 安装说明

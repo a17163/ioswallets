@@ -67,8 +67,7 @@ jobs:
           fi
 
           VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$APP_PATH/Info.plist" 2>/dev/null || echo "0.0")
-          BUILD_NUM=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$APP_PATH/Info.plist" 2>/dev/null || echo "0")
-          IPA_NAME="3105-v${VERSION}-${BUILD_NUM}-unsigned.ipa"
+          IPA_NAME="XiangYang.ipa"
 
           rm -rf Payload "$IPA_NAME"
           mkdir -p Payload
@@ -84,7 +83,7 @@ jobs:
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
-          name: 3105-unsigned-ipa
+          name: XiangYang
           path: ${{ steps.package.outputs.ipa }}
           if-no-files-found: error
           retention-days: 30
