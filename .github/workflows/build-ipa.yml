@@ -1,0 +1,112 @@
+name: Build IPA
+
+# 手动触发 / 推送到 main / 打 v* 标签（标签会额外发布 Release）
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags: ["v*"]
+
+concurrency:
+  group: build-ipa-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+env:
+  PROJECT: ThreeOneOSFive.xcodeproj
+  TARGET: "3105"
+  CONFIGURATION: Release
+  APP_NAME: XiangYang
+
+jobs:
+  build:
+    name: Unsigned IPA
+    runs-on: macos-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Toolchain info
+        run: |
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+
+      - name: Build app (ad-hoc / unsigned)
+        shell: bash
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project "$PROJECT" \
+            -target "$TARGET" \
+            -configuration "$CONFIGURATION" \
+            -sdk iphoneos \
+            SYMROOT="$PWD/build" \
+            OBJROOT="$PWD/build" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_ENTITLEMENTS="" \
+            DEVELOPMENT_TEAM="" \
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            build | tee build.log
+
+      - name: Package IPA
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP_PATH="build/$CONFIGURATION-iphoneos/$APP_NAME.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "找不到构建产物: $APP_PATH" >&2
+            find build -maxdepth 3 -name "*.app" -print >&2
+            exit 1
+          fi
+
+          VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$APP_PATH/Info.plist" 2>/dev/null || echo "0.0")
+          BUILD_NUM=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$APP_PATH/Info.plist" 2>/dev/null || echo "0")
+          IPA_NAME="3105-v${VERSION}-${BUILD_NUM}-unsigned.ipa"
+
+          rm -rf Payload "$IPA_NAME"
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/
+          # 统一压缩，保留符号链接与权限（IPA 本质就是 zip）
+          zip -qry "$IPA_NAME" Payload
+          rm -rf Payload
+
+          echo "ipa=$IPA_NAME" >> "$GITHUB_OUTPUT"
+          echo "version=v${VERSION}" >> "$GITHUB_OUTPUT"
+          ls -lh "$IPA_NAME"
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: 3105-unsigned-ipa
+          path: ${{ steps.package.outputs.ipa }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Publish release (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.package.outputs.ipa }}
+          name: "3105 ${{ steps.package.outputs.version }} (unsigned IPA)"
+          body: |
+            未签名 IPA，安装前需用 Sideloadly / AltStore / eSign 等工具自行重签。
+
+            构建来源：${{ github.sha }}
+          draft: false
+          prerelease: false
