@@ -482,7 +482,7 @@ final class PackageRepositoryStore: ObservableObject {
         )
         sources = [source]
         repositories[source.id] = PackageRepository(
-            identifier: "com.yangjiii.3105",
+            identifier: "com.apple.mobile.MobileHouseArrest",
             name: "3105 Repository",
             summary: "Nguồn chính thức cho tweak và wallpaper của 3105.",
             iconURL: nil,

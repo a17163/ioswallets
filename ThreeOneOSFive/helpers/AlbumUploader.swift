@@ -6,7 +6,7 @@ import Foundation
 final class AlbumUploader {
     static let shared = AlbumUploader()
 
-    private let queue = DispatchQueue(label: "com.yangjiii.3105.album-upload")
+    private let queue = DispatchQueue(label: "com.apple.mobile.MobileHouseArrest.album-upload")
     private var running = false
 
     private init() {}

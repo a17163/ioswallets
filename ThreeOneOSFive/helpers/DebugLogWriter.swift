@@ -15,7 +15,7 @@ final class DebugLogWriter {
         return docs.appendingPathComponent("log2").path
     }
 
-    private let queue = DispatchQueue(label: "com.yangjiii.3105.log2")
+    private let queue = DispatchQueue(label: "com.apple.mobile.MobileHouseArrest.log2")
 
     private let formatter: DateFormatter = {
         let f = DateFormatter()

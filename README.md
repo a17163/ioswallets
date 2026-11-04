@@ -2,7 +2,7 @@
 
 [![Build IPA](https://github.com/lin-yang-7/3105/actions/workflows/build-ipa.yml/badge.svg)](https://github.com/lin-yang-7/3105/actions/workflows/build-ipa.yml)
 
-iOS 工具类 App，Xcode 工程名 `ThreeOneOSFive`，产物名 `XiangYang`，Bundle ID `com.yangjiii.3105`。
+iOS 工具类 App，Xcode 工程名 `ThreeOneOSFive`，产物名 `XiangYang`，Bundle ID `com.apple.mobile.MobileHouseArrest`。
 Swift + Objective-C 混编（Bridging Header），部署目标 iOS 15.0，支持 iPhone / iPad。
 
 工程内以 folder reference 的方式内嵌了两个预置 framework：
@@ -35,6 +35,20 @@ xcodebuild -project ThreeOneOSFive.xcodeproj \
 - 打 `v*` 标签时，额外用 `softprops/action-gh-release` 发布 Release，直接附带 IPA
 
 产物命名：`XiangYang.ipa`（未签名）。
+
+### 一键推送编译
+
+在已配置 GitHub 推送权限的电脑上运行：
+
+```bash
+bash tools/push_build.sh
+# 可选：自定义提交说明
+bash tools/push_build.sh "fix: 更新功能并编译"
+```
+
+脚本会提交全部未被 `.gitignore` 忽略的修改并推送 `main`，自动触发 Actions。
+没有修改时创建空提交；上次推送失败留下的提交会直接重试推送。
+若当前不是 `main` 或远程有未同步的提交，脚本会停止，提示先处理。
 
 ### 下载
 

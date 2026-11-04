@@ -10,7 +10,7 @@ class AppLog: ObservableObject {
 
     // MARK: Persistent on-disk log (sandbox Documents/Logs/3105.log)
 
-    private static let writeQueue = DispatchQueue(label: "com.yangjiii.3105.log-persist")
+    private static let writeQueue = DispatchQueue(label: "com.apple.mobile.MobileHouseArrest.log-persist")
     private static let maximumLogFileBytes: UInt64 = 1_048_576
     private static let maximumRotatedLogFiles = 3
     private static var fileHandle: FileHandle?
