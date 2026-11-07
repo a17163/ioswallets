@@ -67,7 +67,7 @@ java -jar buglyqq-upload-symbol.jar \
 
 前置条件：
 
-1. `buglyqq-upload-symbol.jar` 放到 `tools/`（33 MB，**未入库**，已 gitignore）；
+1. `buglyqq-upload-symbol.jar` 已入库在 `tools/`（33 MB，官方 V3.3.5 包，CI 直接可用）；
 2. AppKey：本地放 `tools/bugly.env`（已 gitignore，模板 `tools/bugly.env.example`）；
    CI 里配 GitHub Secret `BUGLY_APP_KEY`；
 3. 本机需要真正的 JDK/JRE（macOS 自带的 `/usr/bin/java` 只是提示桩；`brew install openjdk@17` 即可）。

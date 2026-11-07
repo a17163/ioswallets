@@ -96,6 +96,3 @@ _logs_*.txt
 
 # 本地凭据（Bugly AppKey 等，不入库）
 /tools/bugly.env
-
-# Bugly 符号表工具（33MB，本地放置即可，不入库）
-/tools/buglyqq-upload-symbol.jar
