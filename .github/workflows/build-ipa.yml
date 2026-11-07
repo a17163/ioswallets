@@ -54,6 +54,18 @@ jobs:
             PROVISIONING_PROFILE_SPECIFIER="" \
             build | tee build.log
 
+      # 符号表上传（可选）：仓库里没有 tools/buglySymboliOS.jar 或没配 Secret 时直接跳过。
+      # Secret：Settings → Secrets and variables → Actions → BUGLY_APP_KEY
+      - name: Upload dSYM to Bugly (optional)
+        if: ${{ secrets.BUGLY_APP_KEY != '' }}
+        shell: bash
+        env:
+          BUGLY_APP_KEY: ${{ secrets.BUGLY_APP_KEY }}
+        run: |
+          chmod +x tools/bugly_upload_dsym.sh
+          tools/bugly_upload_dsym.sh --path "build/$CONFIGURATION-iphoneos" \
+            || echo "warning: dSYM 上传失败，继续打包（不影响 IPA）"
+
       - name: Package IPA
         id: package
         shell: bash

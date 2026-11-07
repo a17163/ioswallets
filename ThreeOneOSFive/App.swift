@@ -8,6 +8,9 @@ struct ThreeOneOSFiveApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
+        // Bugly 要尽量早启动：崩溃处理器要在任何业务代码（含 kernel exploit）之前装好。
+        BuglyReporter.start()
+
         setupLogCapture()
         enableDeveloperModeByDefault()
         log("app: TRX launching — iOS \(AppInfo.osVersion) (\(AppInfo.osBuild)) \(AppInfo.machineName)")

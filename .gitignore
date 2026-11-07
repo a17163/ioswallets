@@ -93,3 +93,6 @@ _logs_*.txt
 /build_tmp/
 /build/
 /build.log
+
+# 本地凭据（Bugly AppKey 等，不入库）
+/tools/bugly.env

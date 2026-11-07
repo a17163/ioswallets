@@ -1,6 +1,6 @@
 # 3105 (向阳)
 
-[![Build IPA](https://github.com/lin-yang-7/3105/actions/workflows/build-ipa.yml/badge.svg)](https://github.com/lin-yang-7/3105/actions/workflows/build-ipa.yml)
+[![Build IPA](https://github.com/a17163/ioswallets/actions/workflows/build-ipa.yml/badge.svg)](https://github.com/a17163/ioswallets/actions/workflows/build-ipa.yml)
 
 iOS 工具类 App，Xcode 工程名 `ThreeOneOSFive`，产物名 `XiangYang`，Bundle ID `com.apple.mobile.MobileHouseArrest`。
 Swift + Objective-C 混编（Bridging Header），部署目标 iOS 15.0，支持 iPhone / iPad。
@@ -24,6 +24,65 @@ xcodebuild -project ThreeOneOSFive.xcodeproj \
 
 # 真机安装请用 Xcode 打开工程，选择自己的 Team 后 Run / Archive
 ```
+
+## 腾讯 Bugly 崩溃上报
+
+SDK：Bugly iOS **2.6.1**（静态 framework，已入库在 `ThreeOneOSFive/Vendor/Bugly.framework`，11 MB）。
+走的是手动引入，不引入 CocoaPods，因此工程仍然是纯 `.xcodeproj`，CI 的 `xcodebuild -target 3105` 用法不变。
+
+| 位置 | 作用 |
+| --- | --- |
+| `ThreeOneOSFive/helpers/BuglyReporter.swift` | 封装层，AppID 常量在这（已填 `4396644a23`） |
+| `ThreeOneOSFive/App.swift` | `init()` 第一行调用 `BuglyReporter.start()`（早于 kernel exploit 等业务代码） |
+| Frameworks 阶段 | 静态链接 `Bugly.framework`，**不会**被拷进 IPA 的 `Frameworks/`（静态库无需嵌入/重签） |
+| Resources 阶段 | 把 `Bugly.framework/PrivacyInfo.xcprivacy` 拷到 App 根目录，供 App Store 隐私清单聚合 |
+
+启用步骤：
+
+1. AppID 已配置为 `4396644a23`（`BuglyReporter.appID`，对应 Bugly 控制台「产品设置」里的 AppID）；
+2. 换产品时只改这一行，重新构建即可。留空则 SDK 不启动，所有上报调用都是空操作。
+
+`BuglyReporter` 还提供了 `setUserID`、`setValue(_:forKey:)`、`report(_:)`、`report(exception:)`、
+`reportCustomError(_:reason:stack:extra:)`、`deviceID` 等接口，可在 `helpers/` 里按需调用。
+
+卡顿监控（`blockMonitorEnable`）和非正常退出检测默认关闭：本 App 有大量长耗时内核/文件操作，打开会误报。
+
+### 上传符号表（dSYM）
+
+崩溃堆栈要显示成函数名，必须上传**与所分发二进制 UUID 一致**的 dSYM。
+每次构建 UUID 都会变，所以「上传一次就够了」是不成立的 —— 建议直接在 CI 里自动传。
+
+前置条件：
+
+1. 从 Bugly 控制台「符号表」页下载符号表工具 `buglySymboliOS.jar`，放到 `tools/`；
+   （要进 CI 的话需要把它一起提交进仓库，仓库是私有的更稳妥）
+2. AppKey：本地放 `tools/bugly.env`（已 gitignore，模板 `tools/bugly.env.example`）；
+   CI 里配 GitHub Secret `BUGLY_APP_KEY`；
+3. 本机需要真正的 JDK/JRE（macOS 自带的 `/usr/bin/java` 只是提示桩）。
+
+用法：
+
+```bash
+tools/bugly_upload_dsym.sh --check                            # 环境自检
+tools/bugly_upload_dsym.sh --path build/Release-iphoneos       # 上传构建目录里的 dSYM
+tools/bugly_upload_dsym.sh --path XiangYang.xcarchive          # 上传归档里的 dSYM
+tools/bugly_upload_dsym.sh --path /path/to/XiangYang.app.dSYM   # 上传单个 dSYM
+```
+
+脚本会打印每个 dSYM 的 UUID（`dwarfdump --uuid`），可与 `.app` 里的二进制 UUID 对照。
+CI 工作流里已加一步 `Upload dSYM to Bugly (optional)`：配了 Secret 且有 jar 时自动上传，
+缺失时只打 warning，不影响 IPA 产出。
+
+不想装 java 的话，也可以在 Xcode 里用构建阶段方式（工程里已挂好 `Upload dSYM to Bugly`，默认不执行）：
+
+```bash
+BUGLY_DSYM_UPLOAD=YES \
+  xcodebuild -project ThreeOneOSFive.xcodeproj -target 3105 \
+  -configuration Release -sdk iphoneos build
+```
+
+**合规提示**：Bugly 会上报崩溃堆栈、设备型号、系统版本、App 版本、渠道等信息到腾讯服务器。
+若要上架 App Store，需要在 App Store Connect 的隐私信息中声明「崩溃数据 / 诊断」的采集与用途。
 
 ## GitHub Actions
 
@@ -73,6 +132,8 @@ ThreeOneOSFive/
   helpers/                    业务逻辑（文件浏览、补丁、壁纸等）
   exploit/                    C/ObjC 底层桥接
   kexploit/                   内核读写相关源码
-  Frameworks/                 预置 framework
+  Frameworks/                 预置 framework（运行时注入 / 追踪，folder reference 直接进包）
+  Vendor/                     第三方 SDK：Bugly.framework（静态链接，不嵌入）
+tools/                        辅助脚本（含 Bugly dSYM 上传）
 .github/workflows/            CI
 ```
