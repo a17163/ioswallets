@@ -65,8 +65,19 @@ jobs:
           BUGLY_APP_KEY: ${{ secrets.BUGLY_APP_KEY }}
         run: |
           chmod +x tools/bugly_upload_dsym.sh
-          tools/bugly_upload_dsym.sh --path "build/$CONFIGURATION-iphoneos" \
-            || echo "warning: dSYM 上传失败，继续打包（不影响 IPA）"
+          set +e
+          OUT=$(tools/bugly_upload_dsym.sh --path "build/$CONFIGURATION-iphoneos" 2>&1)
+          RC=$?
+          echo "$OUT"
+          # 把结果写进 run 页面摘要，方便不登录也能核对
+          {
+            echo "#### Bugly 符号表上传"
+            echo '```'
+            echo "$OUT" | grep -aE "retCode|statusCode|上传成功|所有符号表|version=|error|warning|完成" | tail -15
+            echo '```'
+            echo "exit code: $RC"
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 0
 
       # dSYM 始终作为产物留档：即使上面没自动上传成功，也能下载后本地手工上传
       - name: Upload dSYM artifact

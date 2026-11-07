@@ -132,7 +132,8 @@ echo "== Bugly 符号表上传自检 =="
 echo "java     : ${JAVA:-未找到（需要 JDK/JRE；macOS 自带 /usr/bin/java 只是提示桩）}"
 echo "jar      : ${JAR} $([ -f "${JAR}" ] && echo '' || echo '（未找到）')"
 echo "AppID    : ${APPID}"
-echo "AppKey   : $([ -n "${KEY}" ] && echo "${KEY}" || echo '未配置（tools/bugly.env 或 BUGLY_APP_KEY）')"
+if [ -n "${KEY}" ]; then KEY_MSG="${KEY%${KEY#????}}…(len=${#KEY})"; else KEY_MSG='未配置（tools/bugly.env 或 BUGLY_APP_KEY）'; fi
+echo "AppKey   : ${KEY_MSG}"
 echo "version  : ${VERSION:-未确定（用 --version 指定，需与控制台 crash 版本一致）}"
 [ -n "${SYMBOL_DIR}" ] && echo "symbolDir: ${SYMBOL_DIR}"
 echo
