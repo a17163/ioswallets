@@ -54,7 +54,7 @@ jobs:
             PROVISIONING_PROFILE_SPECIFIER="" \
             build | tee build.log
 
-      # 符号表上传（可选）：没有 tools/buglySymboliOS.jar 或没配 Secret 时脚本自己跳过。
+      # 符号表上传（可选）：tools/buglyqq-upload-symbol.jar 或 Secret 缺失时脚本自己跳过。
       # Secret：Settings → Secrets and variables → Actions → BUGLY_APP_KEY
       # 注意：GitHub 不允许 step 的 if 里引用 secrets（会报 Unrecognized named-value: 'secrets'，
       # 整个 workflow 直接判为 invalid），所以这里不加 if，交给脚本判断 + continue-on-error。
@@ -67,6 +67,15 @@ jobs:
           chmod +x tools/bugly_upload_dsym.sh
           tools/bugly_upload_dsym.sh --path "build/$CONFIGURATION-iphoneos" \
             || echo "warning: dSYM 上传失败，继续打包（不影响 IPA）"
+
+      # dSYM 始终作为产物留档：即使上面没自动上传成功，也能下载后本地手工上传
+      - name: Upload dSYM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: XiangYang-dSYM
+          path: build/${{ env.CONFIGURATION }}-iphoneos/*.dSYM
+          if-no-files-found: ignore
+          retention-days: 30
 
       - name: Package IPA
         id: package

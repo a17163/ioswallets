@@ -50,17 +50,29 @@ SDK：Bugly iOS **2.6.1**（静态 framework，已入库在 `ThreeOneOSFive/Vend
 ### 上传符号表（dSYM）
 
 崩溃堆栈要显示成函数名，必须上传**与所分发二进制 UUID 一致**的 dSYM。
-每次构建 UUID 都会变，所以「上传一次就够了」是不成立的 —— 建议直接在 CI 里自动传。
+每次构建 UUID 都会变，所以「传一次就够」不成立 —— 建议在 CI 里自动传。
+
+用的是官方工具 **buglyqq-upload-symbol V3.3.5**（`buglyqq-upload-symbol.jar`），参数为：
+
+```bash
+java -jar buglyqq-upload-symbol.jar \
+  -appid 4396644a23 \
+  -appkey <AppKey> \
+  -version 2.1.8 \
+  -platform IOS \
+  -inputSymbol <dSYM 所在目录>
+```
+
+注意 `-version` 必须和 Bugly 控制台里看到的 crash 版本号一致（本 App 上报的是 `MARKETING_VERSION` + `.` + `CFBundleVersion`，当前 = `2.1.8`）。
 
 前置条件：
 
-1. 从 Bugly 控制台「符号表」页下载符号表工具 `buglySymboliOS.jar`，放到 `tools/`；
-   （要进 CI 的话需要把它一起提交进仓库，仓库是私有的更稳妥）
+1. `buglyqq-upload-symbol.jar` 放到 `tools/`（33 MB，**未入库**，已 gitignore）；
 2. AppKey：本地放 `tools/bugly.env`（已 gitignore，模板 `tools/bugly.env.example`）；
    CI 里配 GitHub Secret `BUGLY_APP_KEY`；
-3. 本机需要真正的 JDK/JRE（macOS 自带的 `/usr/bin/java` 只是提示桩）。
+3. 本机需要真正的 JDK/JRE（macOS 自带的 `/usr/bin/java` 只是提示桩；`brew install openjdk@17` 即可）。
 
-用法：
+用法（脚本会自动找 java、jar、AppKey，并从同级 `.app` 推导版本号）：
 
 ```bash
 tools/bugly_upload_dsym.sh --check                            # 环境自检
@@ -69,11 +81,10 @@ tools/bugly_upload_dsym.sh --path XiangYang.xcarchive          # 上传归档里
 tools/bugly_upload_dsym.sh --path /path/to/XiangYang.app.dSYM   # 上传单个 dSYM
 ```
 
-脚本会打印每个 dSYM 的 UUID（`dwarfdump --uuid`），可与 `.app` 里的二进制 UUID 对照。
-CI 工作流里已加一步 `Upload dSYM to Bugly (optional)`：配了 Secret 且有 jar 时自动上传，
-缺失时只打 warning，不影响 IPA 产出。
+CI 里有两步：`Upload dSYM to Bugly (optional)`（有 jar + Secret 才真正上传，缺失只告警）
+和 `Upload dSYM artifact`（把 dSYM 作为 Artifact 留档，可下载后本地补传）。
 
-不想装 java 的话，也可以在 Xcode 里用构建阶段方式（工程里已挂好 `Upload dSYM to Bugly`，默认不执行）：
+构建阶段方式也可用（工程里已挂好 `Upload dSYM to Bugly`，默认不执行）：
 
 ```bash
 BUGLY_DSYM_UPLOAD=YES \
