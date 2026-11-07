@@ -84,6 +84,9 @@ tools/bugly_upload_dsym.sh --path /path/to/XiangYang.app.dSYM   # 上传单个 d
 CI 里有两步：`Upload dSYM to Bugly (optional)`（有 jar + Secret 才真正上传，缺失只告警）
 和 `Upload dSYM artifact`（把 dSYM 作为 Artifact 留档，可下载后本地补传）。
 
+上传结果会写进 commit status（context = `bugly-symbol`）：`dSYM 已上传 (v2.1.8)` 即成功；
+未配置 Secret 时是 `pending`，不会把提交标红。
+
 构建阶段方式也可用（工程里已挂好 `Upload dSYM to Bugly`，默认不执行）：
 
 ```bash
