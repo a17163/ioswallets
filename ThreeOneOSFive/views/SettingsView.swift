@@ -9,6 +9,7 @@ struct SettingsView: View {
     @AppStorage(FeatureVisibility.cleanerStorageKey) private var cleanerEnabled = true
     @AppStorage(FeatureVisibility.developerModeStorageKey)
     private var developerModeEnabled = true
+    @State private var confirmTestCrash = false
 
     var body: some View {
         NavigationStack {
@@ -75,6 +76,32 @@ struct SettingsView: View {
                 Section(language.text("common.device")) {
                     LabeledContent(language.text("dashboard.hardware_model"), value: AppInfo.displayMachineName)
                     LabeledContent(language.text("settings.ios_version"), value: "\(AppInfo.osVersion) (\(AppInfo.osBuild))")
+                }
+
+                if developerModeEnabled {
+                    Section {
+                        LabeledContent("状态", value: BuglyReporter.statusText)
+                        LabeledContent("版本 / 渠道", value: BuglyReporter.versionChannelText)
+                        LabeledContent("AppID", value: BuglyReporter.appIDText)
+                        LabeledContent("设备 ID", value: BuglyReporter.deviceIDText)
+
+                        Button {
+                            BuglyReporter.sendTestError()
+                        } label: {
+                            Label("上报测试错误", systemImage: "paperplane")
+                        }
+                        .disabled(!BuglyReporter.isStarted)
+
+                        Button(role: .destructive) {
+                            confirmTestCrash = true
+                        } label: {
+                            Label("触发测试崩溃", systemImage: "bolt.trianglebadge.exclamationmark")
+                        }
+                    } header: {
+                        Text("Bugly 诊断")
+                    } footer: {
+                        Text("测试错误会出现在 Bugly「错误分析」；测试崩溃会立即退出 App，记录约 1 分钟后出现在「崩溃分析」。")
+                    }
                 }
 
                 Section {
@@ -147,6 +174,12 @@ struct SettingsView: View {
             .tint(AppTheme.accent)
             .navigationTitle(language.text("settings.title"))
             .navigationBarTitleDisplayMode(.inline)
+            .confirmationDialog("测试崩溃会立即退出 App，确定继续？",
+                                isPresented: $confirmTestCrash,
+                                titleVisibility: .visible) {
+                Button("触发崩溃", role: .destructive) { BuglyReporter.triggerTestCrash() }
+                Button("取消", role: .cancel) {}
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(language.text("common.done")) { dismiss() }

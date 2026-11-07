@@ -570,6 +570,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThreeOneOSFive/Vendor",
 				);
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -611,6 +612,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThreeOneOSFive/Vendor",
 				);
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
