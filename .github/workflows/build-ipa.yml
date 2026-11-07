@@ -13,6 +13,7 @@ concurrency:
 
 permissions:
   contents: write
+  statuses: write
 
 env:
   PROJECT: ThreeOneOSFive.xcodeproj
@@ -69,6 +70,8 @@ jobs:
           OUT=$(tools/bugly_upload_dsym.sh --path "build/$CONFIGURATION-iphoneos" 2>&1)
           RC=$?
           echo "$OUT"
+          echo "$RC" > .bugly_rc
+          printf '%s\n' "$OUT" > .bugly_out
           # 把结果写进 run 页面摘要，方便不登录也能核对
           {
             echo "#### Bugly 符号表上传"
@@ -78,6 +81,32 @@ jobs:
             echo "exit code: $RC"
           } >> "$GITHUB_STEP_SUMMARY"
           exit 0
+
+      # 把上传结果写成 commit status：提交列表可见，也方便脚本化核对
+      - name: Report dSYM upload status
+        if: always()
+        continue-on-error: true
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          RC=$(cat .bugly_rc 2>/dev/null || echo 99)
+          VER=$(grep -aoE "version=[0-9][0-9.]*" .bugly_out 2>/dev/null | head -1 | cut -d= -f2)
+          if grep -qa "未配置" .bugly_out 2>/dev/null; then
+            STATE=pending; DESC="未配置 BUGLY_APP_KEY，跳过上传"
+          elif [ "$RC" = "0" ] && grep -qa "上传成功" .bugly_out 2>/dev/null; then
+            STATE=success; DESC="dSYM 已上传${VER:+ (v$VER)}"
+          elif [ "$RC" = "0" ]; then
+            STATE=success; DESC="dSYM 已上传${VER:+ (v$VER)}，服务端去重"
+          else
+            STATE=failure; DESC="dSYM 上传失败 rc=$RC"
+          fi
+          curl -sS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}" \
+            -d "{\"state\":\"$STATE\",\"context\":\"bugly-symbol\",\"description\":\"$DESC\"}" > /dev/null
+          echo "reported: $STATE — $DESC"
 
       # dSYM 始终作为产物留档：即使上面没自动上传成功，也能下载后本地手工上传
       - name: Upload dSYM artifact
