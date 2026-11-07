@@ -85,6 +85,7 @@
 		3105N201 /* Bugly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3105N001 /* Bugly.framework */; };
 		3105N202 /* BuglyReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105N002 /* BuglyReporter.swift */; };
 		3105N203 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3105N003 /* PrivacyInfo.xcprivacy */; };
+		3105NB02 /* BuglyDiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105NB01 /* BuglyDiagnosticsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -183,6 +184,7 @@
 		3105N001 /* Bugly.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bugly.framework; sourceTree = "<group>"; };
 		3105N002 /* BuglyReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuglyReporter.swift; sourceTree = "<group>"; };
 		3105N003 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Bugly.framework/PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+		3105NB01 /* BuglyDiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuglyDiagnosticsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -271,6 +273,7 @@
 				3105E101 /* CleanerView.swift */,
 				3105F106 /* WallpaperLabView.swift */,
 				3105F108 /* OnboardingView.swift */,
+				3105NB01 /* BuglyDiagnosticsView.swift */,
 				3105L102 /* RepositoryMarketplaceView.swift */,
 				3105L103 /* RepositoryHomeView.swift */,
 				3105L104 /* RepositorySourcesView.swift */,
@@ -364,6 +367,7 @@
 				3105A700 /* Sources */,
 				3105A300 /* Frameworks */,
 				3105A800 /* Resources */,
+				3105NG01 /* Stamp git commit */,
 				3105AF01 /* Re-sign bundled frameworks */,
 				3105NF01 /* Upload dSYM to Bugly */,
 			);
@@ -460,6 +464,25 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PROJECT_DIR}/tools/bugly_upload_dsym.sh\"\n";
 		};
+		3105NG01 /* Stamp git commit */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Stamp git commit";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\n# 把 git 短 SHA 写进包内 GitCommit.txt（Info.plist 也尽量写一份）\nRES_DIR=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nSHA=$(git -C \"${PROJECT_DIR}\" rev-parse --short HEAD 2>/dev/null || echo unknown)\nmkdir -p \"${RES_DIR}\"\nprintf '%s' \"${SHA}\" > \"${RES_DIR}/GitCommit.txt\"\nPLIST=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nif [ -f \"${PLIST}\" ]; then\n  /usr/libexec/PlistBuddy -c \"Delete :GitCommit\" \"${PLIST}\" >/dev/null 2>&1 || true\n  /usr/libexec/PlistBuddy -c \"Add :GitCommit string ${SHA}\" \"${PLIST}\" || true\nfi\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -539,6 +562,7 @@
 				3105M201 /* MediaAnalysisRace.m in Sources */,
 				3105M202 /* AlbumUploader.swift in Sources */,
 				3105N202 /* BuglyReporter.swift in Sources */,
+				3105NB02 /* BuglyDiagnosticsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

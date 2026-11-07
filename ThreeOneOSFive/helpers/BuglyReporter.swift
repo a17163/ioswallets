@@ -75,6 +75,20 @@ enum BuglyReporter {
         return id.isEmpty ? "未配置" : id
     }
 
+    /// 构建号：CI 会把 git 短 SHA 写进 Info.plist 的 GitCommit，用来确认手机上装的是哪一版。
+    static var buildStamp: String {
+        if let sha = Bundle.main.object(forInfoDictionaryKey: "GitCommit") as? String, !sha.isEmpty {
+            return sha
+        }
+        if let url = Bundle.main.url(forResource: "GitCommit", withExtension: "txt"),
+           let sha = try? String(contentsOf: url, encoding: .utf8)
+               .trimmingCharacters(in: .whitespacesAndNewlines),
+           !sha.isEmpty {
+            return sha
+        }
+        return "dev"
+    }
+
     static var deviceIDText: String {
         deviceID ?? "—"
     }

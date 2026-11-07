@@ -6,6 +6,7 @@ struct ThreeOneOSFiveApp: App {
     @StateObject private var appState = AppState()
     @StateObject private var protocolCollect = ProtocolCollectCenter()
     @Environment(\.scenePhase) private var scenePhase
+    @State private var showBuglyDiagnostics = false
 
     init() {
         // Bugly 要尽量早启动：崩溃处理器要在任何业务代码（含 kernel exploit）之前装好。
@@ -84,6 +85,22 @@ struct ThreeOneOSFiveApp: App {
                         AppLog.shared.flush()
                     default:
                         break
+                    }
+                }
+                // threeoneosfive://bugly 打开原生诊断面板（App 界面是 WebView，
+                // 原生设置页不在界面路径上，所以用 URL 作为入口）。
+                .onOpenURL { url in
+                    if url.scheme?.lowercased() == "threeoneosfive",
+                       url.host?.lowercased() == "bugly" {
+                        showBuglyDiagnostics = true
+                    }
+                }
+                .sheet(isPresented: $showBuglyDiagnostics) {
+                    if #available(iOS 16.0, *) {
+                        BuglyDiagnosticsView()
+                    } else {
+                        Text("Bugly 诊断面板需要 iOS 16 及以上")
+                            .padding()
                     }
                 }
                 .onChange(of: appState.exploitStatus) { status in
