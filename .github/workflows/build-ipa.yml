@@ -54,10 +54,12 @@ jobs:
             PROVISIONING_PROFILE_SPECIFIER="" \
             build | tee build.log
 
-      # 符号表上传（可选）：仓库里没有 tools/buglySymboliOS.jar 或没配 Secret 时直接跳过。
+      # 符号表上传（可选）：没有 tools/buglySymboliOS.jar 或没配 Secret 时脚本自己跳过。
       # Secret：Settings → Secrets and variables → Actions → BUGLY_APP_KEY
+      # 注意：GitHub 不允许 step 的 if 里引用 secrets（会报 Unrecognized named-value: 'secrets'，
+      # 整个 workflow 直接判为 invalid），所以这里不加 if，交给脚本判断 + continue-on-error。
       - name: Upload dSYM to Bugly (optional)
-        if: ${{ secrets.BUGLY_APP_KEY != '' }}
+        continue-on-error: true
         shell: bash
         env:
           BUGLY_APP_KEY: ${{ secrets.BUGLY_APP_KEY }}
