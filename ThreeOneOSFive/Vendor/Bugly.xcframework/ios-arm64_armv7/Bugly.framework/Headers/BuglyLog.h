@@ -7,15 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
-// Log level for Bugly Log
-typedef NS_ENUM(NSUInteger, BuglyLogLevel) {
-    BuglyLogLevelSilent  = 0,
-    BuglyLogLevelError   = 1,
-    BuglyLogLevelWarn    = 2,
-    BuglyLogLevelInfo    = 3,
-    BuglyLogLevelDebug   = 4,
-    BuglyLogLevelVerbose = 5,
-};
+#import "BuglyConfig.h"
+
 #pragma mark -
 
 OBJC_EXTERN void BLYLog(BuglyLogLevel level, NSString *format, ...) NS_FORMAT_FUNCTION(2, 3);

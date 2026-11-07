@@ -38,6 +38,9 @@ jobs:
 
       - name: Build app (ad-hoc / unsigned)
         shell: bash
+        # AppKey 在构建阶段注入包内 BuglyAppKey.txt（SDK 2.7 起 AppKey 必须随 config 传入）
+        env:
+          BUGLY_APP_KEY: ${{ secrets.BUGLY_APP_KEY }}
         run: |
           set -o pipefail
           xcodebuild \
@@ -54,6 +57,18 @@ jobs:
             DEVELOPMENT_TEAM="" \
             PROVISIONING_PROFILE_SPECIFIER="" \
             build | tee build.log
+
+          # 校验 AppKey 确实注入进包（只报存在与否，不打印内容）
+          if [ -n "${BUGLY_APP_KEY:-}" ]; then
+            if [ -s "build/$CONFIGURATION-iphoneos/$APP_NAME.app/BuglyAppKey.txt" ]; then
+              echo "BuglyAppKey injected ✓"
+            else
+              echo "error: BuglyAppKey 未注入到 App 包内" >&2
+              exit 1
+            fi
+          else
+            echo "warning: 未配置 BUGLY_APP_KEY，本次构建的 App 不会启动 Bugly"
+          fi
 
       # 符号表上传（可选）：tools/buglyqq-upload-symbol.jar 或 Secret 缺失时脚本自己跳过。
       # Secret：Settings → Secrets and variables → Actions → BUGLY_APP_KEY

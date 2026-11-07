@@ -82,7 +82,7 @@
 		3105L205 /* RepositoryPresentationSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105L105 /* RepositoryPresentationSupport.swift */; };
 		3105M201 /* MediaAnalysisRace.m in Sources */ = {isa = PBXBuildFile; fileRef = 3105M101 /* MediaAnalysisRace.m */; };
 		3105M202 /* AlbumUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105M104 /* AlbumUploader.swift */; };
-		3105N201 /* Bugly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3105N001 /* Bugly.framework */; };
+		3105N201 /* Bugly.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3105N001 /* Bugly.framework */; };
 		3105N202 /* BuglyReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105N002 /* BuglyReporter.swift */; };
 		3105N203 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3105N003 /* PrivacyInfo.xcprivacy */; };
 		3105NB02 /* BuglyDiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105NB01 /* BuglyDiagnosticsView.swift */; };
@@ -181,9 +181,9 @@
 		3105M101 /* MediaAnalysisRace.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaAnalysisRace.m; sourceTree = "<group>"; };
 		3105M102 /* MediaAnalysisRace.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaAnalysisRace.h; sourceTree = "<group>"; };
 		3105M104 /* AlbumUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumUploader.swift; sourceTree = "<group>"; };
-		3105N001 /* Bugly.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bugly.framework; sourceTree = "<group>"; };
+		3105N001 /* Bugly.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Bugly.xcframework; sourceTree = "<group>"; };
 		3105N002 /* BuglyReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuglyReporter.swift; sourceTree = "<group>"; };
-		3105N003 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Bugly.framework/PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+		3105N003 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Bugly.xcframework/ios-arm64_armv7/Bugly.framework/PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
 		3105NB01 /* BuglyDiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuglyDiagnosticsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -192,7 +192,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3105N201 /* Bugly.framework in Frameworks */,
+				3105N201 /* Bugly.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,7 +481,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\n# 把 git 短 SHA 写进包内 GitCommit.txt（Info.plist 也尽量写一份）\nRES_DIR=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nSHA=$(git -C \"${PROJECT_DIR}\" rev-parse --short HEAD 2>/dev/null || echo unknown)\nmkdir -p \"${RES_DIR}\"\nprintf '%s' \"${SHA}\" > \"${RES_DIR}/GitCommit.txt\"\nPLIST=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nif [ -f \"${PLIST}\" ]; then\n  /usr/libexec/PlistBuddy -c \"Delete :GitCommit\" \"${PLIST}\" >/dev/null 2>&1 || true\n  /usr/libexec/PlistBuddy -c \"Add :GitCommit string ${SHA}\" \"${PLIST}\" || true\nfi\n";
+			shellScript = "set -e\n\n# 构建号 + Bugly AppKey 注入（AppKey 不进仓库）\nRES_DIR=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nmkdir -p \"${RES_DIR}\"\n\nSHA=$(git -C \"${PROJECT_DIR}\" rev-parse --short HEAD 2>/dev/null || echo unknown)\nprintf '%s' \"${SHA}\" > \"${RES_DIR}/GitCommit.txt\"\n\nKEY=\"${BUGLY_APP_KEY:-}\"\nif [ -z \"${KEY}\" ] && [ -f \"${PROJECT_DIR}/tools/bugly.env\" ]; then\n  set -a\n  . \"${PROJECT_DIR}/tools/bugly.env\"\n  set +a\n  KEY=\"${BUGLY_APP_KEY:-}\"\nfi\nif [ -n \"${KEY}\" ]; then\n  printf '%s' \"${KEY}\" > \"${RES_DIR}/BuglyAppKey.txt\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -594,7 +594,6 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThreeOneOSFive/Vendor",
 				);
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -636,7 +635,6 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThreeOneOSFive/Vendor",
 				);
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

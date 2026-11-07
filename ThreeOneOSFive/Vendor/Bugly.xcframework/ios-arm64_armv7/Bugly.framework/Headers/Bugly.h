@@ -1,7 +1,7 @@
 //
 //  Bugly.h
 //
-//  Version: 2.6(1)
+//  Version: 2.0(1)
 //
 //  Copyright (c) 2017年 Tencent. All rights reserved.
 //
@@ -9,45 +9,28 @@
 #import <Foundation/Foundation.h>
 
 #import "BuglyConfig.h"
-#import "BuglyLog.h"
+#import "RMonitorLoggerDefine.h"
 
 BLY_START_NONNULL
 
 @interface Bugly : NSObject
 
-/**
- *  初始化Bugly,使用默认BuglyConfigs
- *
- *  @param appId 注册Bugly分配的应用唯一标识
- */
-+ (void)startWithAppId:(NSString * BLY_NULLABLE)appId;
 
 /**
- *  使用指定配置初始化Bugly
+ *  初始化Bugly
  *
- *  @param appId 注册Bugly分配的应用唯一标识
  *  @param config 传入配置的 BuglyConfig
  */
-+ (void)startWithAppId:(NSString * BLY_NULLABLE)appId
-                config:(BuglyConfig * BLY_NULLABLE)config;
++ (void)startWithConfig:(BuglyConfig *)config;
 
 /**
- *  使用指定配置初始化Bugly
+ * 初始化Bugly
  *
- *  @param appId 注册Bugly分配的应用唯一标识
- *  @param development 是否开发设备
- *  @param config 传入配置的 BuglyConfig
+ * @param pluginArr 启用的模块，默认使用 RM_MODULE_ALL
+ * @param config 传入配置的 BuglyConfig
  */
-+ (void)startWithAppId:(NSString * BLY_NULLABLE)appId
-     developmentDevice:(BOOL)development
-                config:(BuglyConfig * BLY_NULLABLE)config;
-
-/**
- *  设置用户标识
- *
- *  @param userId 用户标识
- */
-+ (void)setUserIdentifier:(NSString *)userId;
++ (void)start:(NSArray<NSString *> *)pluginArr
+       config:(BuglyConfig *)config;
 
 /**
  *  更新版本信息
@@ -157,6 +140,29 @@ BLY_START_NONNULL
  *  关闭bugly监控
  */
 + (void)closeCrashReport;
+
+/// 关闭bugly所有监控，only for extension
++ (void)closeBuglyMonitor;
+
+/// 注册日志函数指针
+/// @param logger 日志函数
++ (void)registerLogCallback:(RMLogCallback)logger;
+
+/// 更新userId
+/// @param userId 用户id
++ (void)updateUserIdentifier:(NSString *)userId;
+
+/// 更新设备id
+/// @param deviceId 设备id
++ (void)updateDeviceIdentifier:(NSString *)deviceId;
+
+/// 更新场景信息
+/// @param scene 场景id，卡顿、内存、资源监控等功能会根据该值进行聚类
++ (void)setScene:(NSString *)scene;
+
+/// 重置自定义场景信息，继续使用 RMonitor 自动获取的场景信息
++ (void)resetScene;
+
 
 BLY_END_NONNULL
 

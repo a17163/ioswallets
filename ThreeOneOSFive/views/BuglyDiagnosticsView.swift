@@ -26,6 +26,7 @@ struct BuglyDiagnosticsView: View {
 
                 Section {
                     LabeledContent("AppID", value: BuglyReporter.appIDText)
+                    LabeledContent("AppKey", value: BuglyReporter.appKeyText)
                     LabeledContent("设备 ID", value: BuglyReporter.deviceIDText)
                 } header: {
                     Text("标识")
