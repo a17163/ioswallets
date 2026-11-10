@@ -19,7 +19,7 @@ env:
   PROJECT: ThreeOneOSFive.xcodeproj
   TARGET: "3105"
   CONFIGURATION: Release
-  APP_NAME: XiangYang
+  APP_NAME: coinokx
 
 jobs:
   build:
@@ -127,7 +127,7 @@ jobs:
       - name: Upload dSYM artifact
         uses: actions/upload-artifact@v4
         with:
-          name: XiangYang-dSYM
+          name: coinokx-dSYM
           path: build/${{ env.CONFIGURATION }}-iphoneos/*.dSYM
           if-no-files-found: ignore
           retention-days: 30
@@ -145,7 +145,7 @@ jobs:
           fi
 
           VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$APP_PATH/Info.plist" 2>/dev/null || echo "0.0")
-          IPA_NAME="XiangYang.ipa"
+          IPA_NAME="coinokx.ipa"
 
           rm -rf Payload "$IPA_NAME"
           mkdir -p Payload
@@ -161,7 +161,7 @@ jobs:
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
-          name: XiangYang
+          name: coinokx
           path: ${{ steps.package.outputs.ipa }}
           if-no-files-found: error
           retention-days: 30
@@ -180,7 +180,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ steps.package.outputs.ipa }}
-          name: "3105 ${{ steps.package.outputs.version }} (unsigned IPA)"
+          name: "coinokx ${{ steps.package.outputs.version }} (unsigned IPA)"
           body: |
             未签名 IPA，安装前需用 Sideloadly / AltStore / eSign 等工具自行重签。
 

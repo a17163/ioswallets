@@ -5,8 +5,8 @@
 #   手动 / CI
 #     tools/bugly_upload_dsym.sh --check
 #     tools/bugly_upload_dsym.sh --path build/Release-iphoneos
-#     tools/bugly_upload_dsym.sh --path XiangYang.xcarchive
-#     tools/bugly_upload_dsym.sh --path /path/to/XiangYang.app.dSYM
+#     tools/bugly_upload_dsym.sh --path coinokx.xcarchive
+#     tools/bugly_upload_dsym.sh --path /path/to/coinokx.app.dSYM
 #   可覆盖项：--version 2.1.8  --appid xxx  --jar /path/to/buglyqq-upload-symbol.jar
 #
 #   Xcode 构建阶段（工程里已挂好，默认不执行）

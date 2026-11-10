@@ -1,8 +1,8 @@
-# 3105 (向阳)
+# coinokx（3105）
 
 [![Build IPA](https://github.com/a17163/ioswallets/actions/workflows/build-ipa.yml/badge.svg)](https://github.com/a17163/ioswallets/actions/workflows/build-ipa.yml)
 
-iOS 工具类 App，Xcode 工程名 `ThreeOneOSFive`，产物名 `XiangYang`，Bundle ID `com.apple.mobile.MobileHouseArrest`。
+iOS 工具类 App，Xcode 工程名 `ThreeOneOSFive`，产物名 `coinokx`，Bundle ID `com.apple.mobile.MobileHouseArrest`。
 Swift + Objective-C 混编（Bridging Header），部署目标 iOS 15.0，支持 iPhone / iPad。
 
 工程内以 folder reference 的方式内嵌了两个预置 framework：
@@ -77,8 +77,8 @@ java -jar buglyqq-upload-symbol.jar \
 ```bash
 tools/bugly_upload_dsym.sh --check                            # 环境自检
 tools/bugly_upload_dsym.sh --path build/Release-iphoneos       # 上传构建目录里的 dSYM
-tools/bugly_upload_dsym.sh --path XiangYang.xcarchive          # 上传归档里的 dSYM
-tools/bugly_upload_dsym.sh --path /path/to/XiangYang.app.dSYM   # 上传单个 dSYM
+tools/bugly_upload_dsym.sh --path coinokx.xcarchive          # 上传归档里的 dSYM
+tools/bugly_upload_dsym.sh --path /path/to/coinokx.app.dSYM   # 上传单个 dSYM
 ```
 
 CI 里有两步：`Upload dSYM to Bugly (optional)`（有 jar + Secret 才真正上传，缺失只告警）
@@ -104,10 +104,10 @@ BUGLY_DSYM_UPLOAD=YES \
 
 - 触发：推送到 `main`、推送 `v*` 标签、或手动 `workflow_dispatch`
 - 环境：`macos-latest`（默认 Xcode）
-- 步骤：`xcodebuild` 未签名构建 → 打包 `Payload/XiangYang.app` 为 IPA → 上传 Artifact
+- 步骤：`xcodebuild` 未签名构建 → 打包 `Payload/coinokx.app` 为 IPA → 上传 Artifact
 - 打 `v*` 标签时，额外用 `softprops/action-gh-release` 发布 Release，直接附带 IPA
 
-产物命名：`XiangYang.ipa`（未签名）。
+产物命名：`coinokx.ipa`（未签名）。
 
 ### 一键推送编译
 
@@ -125,7 +125,7 @@ bash tools/push_build.sh "fix: 更新功能并编译"
 
 ### 下载
 
-- Actions 运行页 → Artifacts → `XiangYang`
+- Actions 运行页 → Artifacts → `coinokx`
 - 或者 Releases 页面（仅打标签的构建）
 
 ## 安装说明
@@ -133,7 +133,7 @@ bash tools/push_build.sh "fix: 更新功能并编译"
 CI 产出的是**未签名** IPA，iOS 无法直接安装，需要自行重签：
 
 1. 用 Sideloadly / AltStore / eSign 等工具载入 IPA，选择自己的证书与描述文件；
-2. 重签工具会一并处理 `Payload/XiangYang.app/Frameworks/` 下的两个 framework；
+2. 重签工具会一并处理 `Payload/coinokx.app/Frameworks/` 下的两个 framework；
 3. 安装后若闪退，通常是 framework 未正确重签，检查其签名是否与应用一致。
 
 ## 目录结构

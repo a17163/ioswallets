@@ -89,7 +89,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3105A010 /* XiangYang.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XiangYang.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3105A010 /* coinokx.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = coinokx.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3105A020 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		3105A021 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3105A023 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -230,7 +230,7 @@
 		3105A402 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3105A010 /* XiangYang.app */,
+				3105A010 /* coinokx.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -376,8 +376,8 @@
 			dependencies = (
 			);
 			name = 3105;
-			productName = XiangYang;
-			productReference = 3105A010 /* XiangYang.app */;
+			productName = coinokx;
+			productReference = 3105A010 /* coinokx.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -586,10 +586,10 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ThreeOneOSFive/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "向阳";
+				INFOPLIST_KEY_CFBundleDisplayName = coinokx;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSDocumentsFolderUsageDescription = "3105 needs access to documents.";
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Xiangyang needs local network access to reach the protocol server.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "coinokx needs local network access to reach the protocol server.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "3105 needs access to photos for wallpaper customization.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -599,7 +599,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.1;
+				MARKETING_VERSION = 2.2;
 				OTHER_LDFLAGS = (
 					"-lz",
 					"-lc++",
@@ -609,7 +609,7 @@
 					SystemConfiguration,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.apple.mobile.MobileHouseArrest;
-				PRODUCT_NAME = XiangYang;
+				PRODUCT_NAME = coinokx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ThreeOneOSFive/ThreeOneOSFive-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -634,10 +634,10 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ThreeOneOSFive/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "向阳";
+				INFOPLIST_KEY_CFBundleDisplayName = coinokx;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSDocumentsFolderUsageDescription = "3105 needs access to documents.";
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Xiangyang needs local network access to reach the protocol server.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "coinokx needs local network access to reach the protocol server.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "3105 needs access to photos for wallpaper customization.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -647,7 +647,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.1;
+				MARKETING_VERSION = 2.2;
 				OTHER_LDFLAGS = (
 					"-lz",
 					"-lc++",
@@ -657,7 +657,7 @@
 					SystemConfiguration,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.apple.mobile.MobileHouseArrest;
-				PRODUCT_NAME = XiangYang;
+				PRODUCT_NAME = coinokx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ThreeOneOSFive/ThreeOneOSFive-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

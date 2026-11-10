@@ -15,7 +15,7 @@ if ! git merge-base --is-ancestor origin/main HEAD; then
   exit 1
 fi
 
-message="${1:-ci: build XiangYang IPA}"
+message="${1:-ci: build coinokx IPA}"
 git add -A
 if ! git diff --cached --quiet; then
   git commit -m "$message"
@@ -25,7 +25,7 @@ fi
 
 git push origin main
 echo
-echo "已推送，GitHub Actions 将自动编译 XiangYang.ipa。"
+echo "已推送，GitHub Actions 将自动编译 coinokx.ipa。"
 echo "提交：$(git rev-parse --short HEAD)"
 echo "构建页面：https://github.com/a17163/ioswallets/actions/workflows/build-ipa.yml"
-echo "编译完成后登录 GitHub，下载 Artifacts → XiangYang，解压获取 IPA。"
+echo "编译完成后登录 GitHub，下载 Artifacts → coinokx，解压获取 IPA。"

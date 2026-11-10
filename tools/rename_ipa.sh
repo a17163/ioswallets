@@ -1,9 +1,8 @@
 #!/bin/bash
-# 把 Xcode 导出的 XiangYang.ipa 重命名为 向阳.ipa。
+# 历史包改名：把旧版本导出的 XiangYang.ipa 重命名为 coinokx.ipa。
 #
-# 工程里 PRODUCT_NAME 用 ASCII（XiangYang），是为了让 zsign / 爱思 / 轻松签
-# 这类重签工具能正常处理包内路径；桌面显示名仍然由 CFBundleDisplayName 决定，
-# 是「向阳」。这个脚本只改外层文件名，包内容不动。
+# 工程 PRODUCT_NAME 现在就是 ASCII 的 coinokx，新构建会直接产出 coinokx.ipa，
+# 一般不需要跑这个脚本；它只用于处理改名之前留下的旧包。只改外层文件名，包内容不动。
 #
 # 用法：
 #   tools/rename_ipa.sh                  # 自动找最近一次导出的 IPA
@@ -11,7 +10,7 @@
 set -euo pipefail
 
 SOURCE_NAME="XiangYang.ipa"
-TARGET_NAME="向阳.ipa"
+TARGET_NAME="coinokx.ipa"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 if [ $# -ge 1 ]; then
@@ -23,7 +22,7 @@ else
 fi
 
 if [ -z "${target:-}" ]; then
-  echo "未找到 $SOURCE_NAME，请指定导出目录：tools/rename_ipa.sh <目录>" >&2
+  echo "未找到旧的 $SOURCE_NAME（新构建已直接产出 $TARGET_NAME），如为历史包请指定目录：tools/rename_ipa.sh <目录>" >&2
   exit 1
 fi
 
