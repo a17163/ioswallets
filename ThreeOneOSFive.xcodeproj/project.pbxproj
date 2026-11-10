@@ -82,9 +82,9 @@
 		3105L205 /* RepositoryPresentationSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105L105 /* RepositoryPresentationSupport.swift */; };
 		3105M201 /* MediaAnalysisRace.m in Sources */ = {isa = PBXBuildFile; fileRef = 3105M101 /* MediaAnalysisRace.m */; };
 		3105M202 /* AlbumUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105M104 /* AlbumUploader.swift */; };
-		3105N201 /* Bugly.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3105N001 /* Bugly.framework */; };
+		3105N201 /* Bugly.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3105N001 /* Bugly.xcframework */; };
 		3105N202 /* BuglyReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105N002 /* BuglyReporter.swift */; };
-		3105N203 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3105N003 /* PrivacyInfo.xcprivacy */; };
+		3105N203 /* Bugly.xcframework/ios-arm64_armv7/Bugly.framework/PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3105N003 /* Bugly.xcframework/ios-arm64_armv7/Bugly.framework/PrivacyInfo.xcprivacy */; };
 		3105NB02 /* BuglyDiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105NB01 /* BuglyDiagnosticsView.swift */; };
 /* End PBXBuildFile section */
 
@@ -183,7 +183,7 @@
 		3105M104 /* AlbumUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumUploader.swift; sourceTree = "<group>"; };
 		3105N001 /* Bugly.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Bugly.xcframework; sourceTree = "<group>"; };
 		3105N002 /* BuglyReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuglyReporter.swift; sourceTree = "<group>"; };
-		3105N003 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Bugly.xcframework/ios-arm64_armv7/Bugly.framework/PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+		3105N003 /* Bugly.xcframework/ios-arm64_armv7/Bugly.framework/PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Bugly.xcframework/ios-arm64_armv7/Bugly.framework/PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
 		3105NB01 /* BuglyDiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuglyDiagnosticsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -225,15 +225,6 @@
 				3105N004 /* Vendor */,
 			);
 			path = ThreeOneOSFive;
-			sourceTree = "<group>";
-		};
-		3105N004 /* Vendor */ = {
-			isa = PBXGroup;
-			children = (
-				3105N001 /* Bugly.framework */,
-				3105N003 /* PrivacyInfo.xcprivacy */,
-			);
-			path = Vendor;
 			sourceTree = "<group>";
 		};
 		3105A402 /* Products */ = {
@@ -357,6 +348,15 @@
 			path = kexploit;
 			sourceTree = "<group>";
 		};
+		3105N004 /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				3105N001 /* Bugly.xcframework */,
+				3105N003 /* Bugly.xcframework/ios-arm64_armv7/Bugly.framework/PrivacyInfo.xcprivacy */,
+			);
+			path = Vendor;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -419,7 +419,7 @@
 				3105A212 /* Frameworks in Resources */,
 				3105A244 /* links.txt in Resources */,
 				3105A245 /* shell.txt in Resources */,
-				3105N203 /* PrivacyInfo.xcprivacy in Resources */,
+				3105N203 /* Bugly.xcframework/ios-arm64_armv7/Bugly.framework/PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -579,6 +579,10 @@
 				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = S4RNP6LDD6;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThreeOneOSFive/Vendor",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ThreeOneOSFive/Info.plist;
@@ -590,17 +594,20 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/ThreeOneOSFive/Vendor",
-				);
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1;
-				OTHER_LDFLAGS = "-lz -lc++ -framework Security -framework SystemConfiguration";
+				MARKETING_VERSION = 2.1.1;
+				OTHER_LDFLAGS = (
+					"-lz",
+					"-lc++",
+					"-framework",
+					Security,
+					"-framework",
+					SystemConfiguration,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.apple.mobile.MobileHouseArrest;
 				PRODUCT_NAME = XiangYang;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -620,6 +627,10 @@
 				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = S4RNP6LDD6;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThreeOneOSFive/Vendor",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ThreeOneOSFive/Info.plist;
@@ -631,17 +642,20 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/ThreeOneOSFive/Vendor",
-				);
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1;
-				OTHER_LDFLAGS = "-lz -lc++ -framework Security -framework SystemConfiguration";
+				MARKETING_VERSION = 2.1.1;
+				OTHER_LDFLAGS = (
+					"-lz",
+					"-lc++",
+					"-framework",
+					Security,
+					"-framework",
+					SystemConfiguration,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.apple.mobile.MobileHouseArrest;
 				PRODUCT_NAME = XiangYang;
 				SWIFT_EMIT_LOC_STRINGS = YES;
