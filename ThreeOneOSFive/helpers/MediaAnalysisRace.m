@@ -166,10 +166,23 @@ static NSXPCConnection *CreateMachServiceConnection(NSString *serviceName)
 
     Class scls = NSClassFromString(@"MADMLScalingRequest");
     if (scls) {
+        // iOS 17 的 MADMLScalingRequest 只有 _scaledImageWidth/_scaledImageHeight
+        // 两个 ivar，没有 scalingModelIndex（该键 iOS 26 才加）。KVC 设不存在的键
+        // 会抛 NSUnknownKeyException，后台队列上没人接就是 SIGABRT 闪退
+        // （crash: makeCombinedRequest + setValue:forKey:）。所以每个键单独兜底：
+        // 旧系统没有 scalingModelIndex 时跳过，请求照常下发。
         id sreq = [scls new];
-        [sreq setValue:@(200) forKey:@"scaledImageWidth"];
-        [sreq setValue:@(200) forKey:@"scaledImageHeight"];
-        [sreq setValue:@(1) forKey:@"scalingModelIndex"];
+        @try {
+            [sreq setValue:@(200) forKey:@"scaledImageWidth"];
+            [sreq setValue:@(200) forKey:@"scaledImageHeight"];
+        } @catch (NSException *e) {
+            [self log:[NSString stringWithFormat:@"[scaling] size KVC skipped: %@", e.reason]];
+        }
+        @try {
+            [sreq setValue:@(1) forKey:@"scalingModelIndex"];
+        } @catch (NSException *e) {
+            // iOS <= 17 没有该属性：忽略，缩放仍按默认模型执行
+        }
         [reqs addObject:sreq];
     }
 
